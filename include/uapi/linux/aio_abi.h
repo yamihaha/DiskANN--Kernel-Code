@@ -104,6 +104,8 @@ struct iocb {
 	 * eventfd to signal AIO readiness to
 	 */
 	__u32	aio_resfd;
+
+	__u32   added_info;        // @wbl  added info
 }; /* 64 bytes */
 
 #undef IFBIG

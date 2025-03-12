@@ -329,6 +329,8 @@ struct kiocb {
 	u16			ki_ioprio; /* See linux/ioprio.h */
 	unsigned int		ki_cookie; /* for ->iopoll */
 
+	__u32   added_info;        // @wbl  added info
+
 	randomized_struct_fields_end
 };
 

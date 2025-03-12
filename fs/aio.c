@@ -1451,6 +1451,9 @@ static int aio_prep_rw(struct kiocb *req, const struct iocb *iocb)
 	req->private = NULL;
 	req->ki_pos = iocb->aio_offset;
 	req->ki_flags = iocb_flags(req->ki_filp);
+
+	req->added_info = iocb->added_info;        // @wbl
+
 	if (iocb->aio_flags & IOCB_FLAG_RESFD)
 		req->ki_flags |= IOCB_EVENTFD;
 	req->ki_hint = ki_hint_validate(file_write_hint(req->ki_filp));
@@ -1554,7 +1557,7 @@ static int aio_write(struct kiocb *req, const struct iocb *iocb,
 	struct file *file;
 	int ret;
 
-	ret = aio_prep_rw(req, iocb);
+	ret = aio_prep_rw(req, iocb);       // key func
 	if (ret)
 		return ret;
 	file = req->ki_filp;
@@ -1836,7 +1839,7 @@ static int __io_submit_one(struct kioctx *ctx, const struct iocb *iocb,
 	case IOCB_CMD_PREAD:
 		return aio_read(&req->rw, iocb, false, compat);
 	case IOCB_CMD_PWRITE:
-		return aio_write(&req->rw, iocb, false, compat);
+		return aio_write(&req->rw, iocb, false, compat);     // key func
 	case IOCB_CMD_PREADV:
 		return aio_read(&req->rw, iocb, true, compat);
 	case IOCB_CMD_PWRITEV:
@@ -1883,7 +1886,7 @@ static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
 	if (unlikely(!req))
 		return -EAGAIN;
 
-	err = __io_submit_one(ctx, &iocb, user_iocb, req, compat);
+	err = __io_submit_one(ctx, &iocb, user_iocb, req, compat);      // key func
 
 	/* Done with the synchronous reference */
 	iocb_put(req);

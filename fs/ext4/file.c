@@ -75,7 +75,7 @@ static ssize_t ext4_file_read_iter(struct kiocb *iocb, struct iov_iter *to)
 	if (IS_DAX(file_inode(iocb->ki_filp)))
 		return ext4_dax_read_iter(iocb, to);
 #endif
-	return generic_file_read_iter(iocb, to);
+	return generic_file_read_iter(iocb, to);      // key func
 }
 
 /*
