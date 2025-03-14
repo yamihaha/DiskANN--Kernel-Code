@@ -1453,6 +1453,7 @@ static int aio_prep_rw(struct kiocb *req, const struct iocb *iocb)
 	req->ki_flags = iocb_flags(req->ki_filp);
 
 	req->added_info = iocb->added_info;        // @wbl
+	pr_debug("------------------- iocb -> kiocb: %d\n",req->added_info);
 
 	if (iocb->aio_flags & IOCB_FLAG_RESFD)
 		req->ki_flags |= IOCB_EVENTFD;
@@ -1865,6 +1866,15 @@ static int io_submit_one(struct kioctx *ctx, struct iocb __user *user_iocb,
 
 	if (unlikely(copy_from_user(&iocb, user_iocb, sizeof(iocb))))
 		return -EFAULT;
+
+	/*
+	* pr_debug("---------------- user_iocb:%d \n",user_iocb->added_info);   
+	* 不能这么写，由于 user_iocb 是用户空间的，这样做会导致：非法内存访问，系统宕机 ！
+	*/
+	
+	pr_debug("---------------- user_iocb -> iocb:%d \n",iocb.added_info);
+	pr_debug("offsetof(struct iocb, added_info) = %zu\n", offsetof(struct iocb, added_info));
+	pr_debug("sizeof(struct iocb) = %zu\n", sizeof(struct iocb));
 
 	/* enforce forwards compatibility on users */
 	if (unlikely(iocb.aio_reserved2)) {

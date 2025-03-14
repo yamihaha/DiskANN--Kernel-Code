@@ -447,6 +447,9 @@ dio_bio_alloc(struct dio *dio, struct dio_submit *sdio,
 
 	bio->bi_write_hint = dio->iocb->ki_hint;
 
+	bio->added_info = dio->iocb->added_info;     // @wbl
+	pr_debug("------------------- kiocb -> bio: %d\n",bio->added_info);
+
 	sdio->bio = bio;
 	sdio->logical_offset_in_bio = sdio->cur_page_fs_offset;
 }

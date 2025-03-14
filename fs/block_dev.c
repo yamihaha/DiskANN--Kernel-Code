@@ -337,11 +337,6 @@ static void blkdev_bio_end_io(struct bio *bio)
 	}
 }
 
-// @wbl  bio <- kiocb
-void bio_added_info(struct bio *bio,struct kiocb *iocb){
-	bio->added_info = iocb->added_info;
-}
-
 static ssize_t
 __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
 {
@@ -390,8 +385,6 @@ __blkdev_direct_IO(struct kiocb *iocb, struct iov_iter *iter, int nr_pages)
 		bio->bi_private = dio;
 		bio->bi_end_io = blkdev_bio_end_io;
 		bio->bi_ioprio = iocb->ki_ioprio;
-
-		bio_added_info(bio,iocb);          // @wbl bio <- iocb
 
 		ret = bio_iov_iter_get_pages(bio, iter);
 		if (unlikely(ret)) {

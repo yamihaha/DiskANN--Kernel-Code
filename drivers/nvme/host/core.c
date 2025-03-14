@@ -724,6 +724,7 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 	// @wbl  added info
 	// 将 added_info 放到了 resvd2 的保留字段中
 	cmnd->rw.rsvd2 = (__u64)req->bio->added_info; 
+	pr_debug("------------------- bio -> cmnd: %d\n",req->bio->added_info);
 
 	if (req_op(req) == REQ_OP_WRITE && ctrl->nr_streams)
 		nvme_assign_write_stream(ctrl, req, &control, &dsmgmt);

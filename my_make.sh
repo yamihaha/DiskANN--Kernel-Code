@@ -1,6 +1,6 @@
 #!/bin/bash
 
-read -p "check the kernel name?(y/n): " answer
+read -p "check the kernel name &&& sudo?(y/n): " answer
 
 # 检查用户输入
 if [ "$answer" = "y" ]; then
