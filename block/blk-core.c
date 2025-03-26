@@ -597,6 +597,7 @@ void blk_put_request(struct request *req)
 }
 EXPORT_SYMBOL(blk_put_request);
 
+/* 尝试将 bio 连接到 request 的尾部（说明该 bio 和 request 的末尾 bio 的逻辑地址接的上）*/
 bool bio_attempt_back_merge(struct request *req, struct bio *bio,
 		unsigned int nr_segs)
 {

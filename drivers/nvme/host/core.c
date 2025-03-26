@@ -707,6 +707,7 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 	struct nvme_ctrl *ctrl = ns->ctrl;
 	u16 control = 0;
 	u32 dsmgmt = 0;
+	struct bio* bio;          // @wbl
 
 	if (req->cmd_flags & REQ_FUA)
 		control |= NVME_RW_FUA;
@@ -725,6 +726,16 @@ static inline blk_status_t nvme_setup_rw(struct nvme_ns *ns,
 	// 将 added_info 放到了 resvd2 的保留字段中
 	cmnd->rw.rsvd2 = (__u64)req->bio->added_info; 
 	pr_debug("------------------- bio -> cmnd: %d\n",req->bio->added_info);
+
+	bio = req->bio;
+	while(bio){
+		if(bio->added_info > 0 && bio->added_info <= 4096){
+			cmnd->rw.rsvd2 = (__u64)bio->added_info;
+			break;
+		}
+
+		bio = bio->bi_next;
+	}
 
 	if (req_op(req) == REQ_OP_WRITE && ctrl->nr_streams)
 		nvme_assign_write_stream(ctrl, req, &control, &dsmgmt);

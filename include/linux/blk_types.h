@@ -154,7 +154,7 @@ struct bio {
 	blk_status_t		bi_status;
 	u8			bi_partno;
 
-	struct bvec_iter	bi_iter;
+	struct bvec_iter	bi_iter;      /* including data size info */
 
 	atomic_t		__bi_remaining;
 	bio_end_io_t		*bi_end_io;
